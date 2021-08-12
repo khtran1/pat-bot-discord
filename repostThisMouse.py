@@ -4,14 +4,13 @@ import random
 import discord
 
 import json
+import driveAuth as auth
 
 winner = 0
 end = 0
-
 client = None
-
 # Test : 317823555725295626         Main: 236513266321457152
-channelID = 317823555725295626
+channelID = 236513266321457152
 
 the_mouse = (
     "https://media.discordapp.net/attachments/"
@@ -20,10 +19,31 @@ the_mouse = (
 )
 
 
-def get_leaderboard():
-    pass
+def get_global_leaderboard():
+    filesList = auth.drive.ListFile({'q': "trashed=false"}).GetList()
+    for files in filesList:
+        if files['title'] == 'leaderboard.json':
+            global_leaderboard = files.GetContentString("leaderboard.json")
+
+            return global_leaderboard
 
 
+def update_global_leaderboard():
+    with open(json_file, "r") as f:
+        updated_leaderboard = f.read()
+        print("new learboerd", str(updated_leaderboard))
+        filesList = auth.drive.ListFile({'q': "trashed=false"}).GetList()
+        for files in filesList:
+            if files['title'] == 'leaderboard.json':
+                files.SetContentString(updated_leaderboard)
+                print('Uploading...')
+                files.Upload()
+                print('Uploaded new leaderboard')
+                break
+
+
+global_leaderboard = get_global_leaderboard()
+print(global_leaderboard, type(global_leaderboard))
 json_file = r"./leaderboard.json"
 
 
@@ -56,8 +76,6 @@ async def send_leaderboard(winner, time):
                 print("Error in enumerating leaderboard: ", e)
                 break
 
-        print(leaderboard_text)
-
         embed.add_field(
             name="who repost da mouse fastest",
             value=leaderboard_text,
@@ -69,7 +87,7 @@ async def send_leaderboard(winner, time):
 
 async def repost_this_mouse():
     await client.wait_until_ready()
-    secondsTillMouse = random.randint(1, 5)
+    secondsTillMouse = random.randint(2000, 70000)
 
     channel = client.get_channel(channelID)
     while not client.is_closed():
@@ -100,12 +118,14 @@ async def repost_this_mouse():
 
         update_leaderboard(json_file, winner_dict)
 
-        secondsTillMouse = random.randint(2000, 85000)
+        secondsTillMouse = random.randint(2000, 70000)
         print(f'Next mouse in {secondsTillMouse} seconds')
 
         await send_leaderboard(winner.mention, round(end-start, 2))
 
         await asyncio.sleep(secondsTillMouse)
+
+        print('json file: ', json_file)
 
 
 def reset_leaderboard(json_file):
@@ -129,7 +149,7 @@ def update_leaderboard(json_file, winner_dict):
         leaderboard = {}
         exists = False
         try:
-            data = f.read()
+            data = global_leaderboard
             leaderboard = json.loads(data)
         except Exception as e:
             print('Empty leaderboard: ', e)
@@ -162,3 +182,5 @@ def update_leaderboard(json_file, winner_dict):
             leaderboard.update(winner_dict)
 
             json.dump(format_leaderboard(leaderboard), f)
+
+    update_global_leaderboard()

@@ -99,7 +99,7 @@ async def on_message(message):
         hp.updateTransitions()
 
     if (message.content.lower() == "hey pat" and
-            message.channel.id == 317823555725295626):
+            message.channel.id == 714934718155456663):
         rawText = hp.rawText
         hp.updateTransitions()
         finalMessage = hp.sample_sentence(rawText, random.randint(3, 30), 1000)
