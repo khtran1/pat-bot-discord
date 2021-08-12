@@ -87,10 +87,12 @@ async def send_leaderboard(winner, time):
 
 async def repost_this_mouse():
     await client.wait_until_ready()
-    secondsTillMouse = random.randint(2000, 70000)
 
     channel = client.get_channel(channelID)
     while not client.is_closed():
+        secondsTillMouse = random.randint(2000, 70000)
+        print(f'Next mouse in {secondsTillMouse} seconds')
+        await asyncio.sleep(secondsTillMouse)
 
         await channel.send(the_mouse)
         print('sent mouse -- took ' + str(secondsTillMouse) + " seconds")
@@ -118,14 +120,7 @@ async def repost_this_mouse():
 
         update_leaderboard(json_file, winner_dict)
 
-        secondsTillMouse = random.randint(2000, 70000)
-        print(f'Next mouse in {secondsTillMouse} seconds')
-
         await send_leaderboard(winner.mention, round(end-start, 2))
-
-        await asyncio.sleep(secondsTillMouse)
-
-        print('json file: ', json_file)
 
 
 def reset_leaderboard(json_file):
