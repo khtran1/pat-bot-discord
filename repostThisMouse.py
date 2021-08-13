@@ -43,7 +43,7 @@ def update_global_leaderboard():
 
 
 global_leaderboard = get_global_leaderboard()
-print(global_leaderboard, type(global_leaderboard))
+
 json_file = r"./leaderboard.json"
 
 
