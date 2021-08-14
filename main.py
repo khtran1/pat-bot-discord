@@ -69,12 +69,12 @@ async def on_message(message):
             # goofy
             if rng2 == 4:
                 finalMessage = (
-                    "shut the fuck up goofy ass nigga i will"
-                    "rock your shit if you test me one more time."
-                    "ur always saying this and that and when i pull up ur"
-                    "not all about this and that. make up ur mind goofy ass,"
-                    "cuz me? im about that shit, i got the shooters on deck."
-                    "wait, u hear that? yeah thats me trotting my way"
+                    "shut the fuck up goofy ass nigga i will "
+                    "rock your shit if you test me one more time. "
+                    "ur always saying this and that and when i pull up ur "
+                    "not all about this and that. make up ur mind goofy ass, "
+                    "cuz me? im about that shit, i got the shooters on deck. "
+                    "wait, u hear that? yeah thats me trotting my way "
                     "down to ur house. dont test me again nigga."
                 )
 
