@@ -87,7 +87,7 @@ async def repost_this_mouse():
 
     channel = client.get_channel(channelID)
     while not client.is_closed():
-        secondsTillMouse = random.randint(600, 60000)
+        secondsTillMouse = random.randint(6000, 80000)
         print(f'Next mouse in {secondsTillMouse} seconds')
         await asyncio.sleep(secondsTillMouse)
 
