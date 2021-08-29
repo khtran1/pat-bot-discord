@@ -62,22 +62,6 @@ async def on_message(message):
                         sentence.remove(word)
                 finalMessage = ' '.join(sentence) + ' yes'
 
-            # shutup
-            if rng2 == 3:
-                finalMessage = 'shut up shut up i hate you'
-
-            # goofy
-            if rng2 == 4:
-                finalMessage = (
-                    "shut the fuck up goofy ass nigga i will "
-                    "rock your shit if you test me one more time. "
-                    "ur always saying this and that and when i pull up ur "
-                    "not all about this and that. make up ur mind goofy ass, "
-                    "cuz me? im about that shit, i got the shooters on deck. "
-                    "wait, u hear that? yeah thats me trotting my way "
-                    "down to ur house. dont test me again nigga."
-                )
-
             # man
             if rng2 == 5:
                 finalMessage = '>.<'
