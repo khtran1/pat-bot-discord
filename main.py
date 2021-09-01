@@ -77,7 +77,7 @@ async def on_message(message):
     # saves all messages (not from a bot) to txt file
     if (message.author.bot is False and message.content != 'go away' and
             message.content.lower() != 'hey pat' and
-            len(message.content) > 7 and
+            len((message.content).split()) > 7 and
             message.channel.id == 714934718155456663):
         hp.updateBrain(message.content)
         hp.updateTransitions()
@@ -86,15 +86,14 @@ async def on_message(message):
             message.channel.id == 714934718155456663):
         rawText = hp.rawText
         hp.updateTransitions()
-        finalMessage = hp.sample_sentence(rawText, random.randint(3, 30), 1000)
+        finalMessage = hp.sample_sentence(rawText, random.randint(2, 30), 1000)
         await message.channel.send(finalMessage)
 
     if (message.content == "hey pat get brain damage" and
             message.author.id == 228379182369996801):
-        await message.channel.send('no please not my brain no')
         hp.deleteBrain()
         hp.updateTransitions()
-        await message.channel.send('ooog glog haahhhh')
+        await message.channel.send('fuck')
 
     if (message.content == "ping" and
             message.author.id == 228379182369996801):

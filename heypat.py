@@ -8,7 +8,7 @@ def updateBrain(text):
     for files in filesList:
         if files['title'] == 'patbrain.txt':
             files.GetContentFile("patbrain.txt")
-            update = files.GetContentString() + " " + text
+            update = files.GetContentString() + " ||| " + text
             files.SetContentString(update)
             files.Upload()
             break
@@ -72,6 +72,19 @@ def sample_sentence(rawText, sentence_length, burn_in=1000):
 
         if k >= burn_in:
             sentence.append(current_word)
+
+        if "|||" in sentence:
+            sentence = sentence[:-1]
+            print('found |||')
+            break
+
+        if any(('.' or '!' or '?') in s for s in sentence):
+            print('found end of sentence')
+            break
+
+    if len(sentence) == 0:
+        print('legngth 0')
+        sample_sentence(rawText, np.random.randint(100, 150), 1000)
 
     return ' '.join(sentence)
 
