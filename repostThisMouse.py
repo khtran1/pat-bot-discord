@@ -140,7 +140,8 @@ async def repost_this_mouse():
     mouse_sticker = await client.fetch_sticker(the_mouse)
 
     while not client.is_closed():
-        secondsTillMouse = random.randint(0, 5)
+        # 6000-40000
+        secondsTillMouse = random.randint(6000, 40000)
         print(f'Next mouse in {secondsTillMouse} seconds')
 
         await asyncio.sleep(secondsTillMouse)
