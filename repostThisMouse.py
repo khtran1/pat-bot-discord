@@ -8,7 +8,7 @@ import driveAuth as auth
 
 client = None
 # Test : 432011496696971274         Main: 236513266321457152
-channelID = 432011496696971274
+channelID = 236513266321457152
 
 the_mouse = 874553330372861972
 
