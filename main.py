@@ -1,5 +1,6 @@
 import os
 import nextcord
+
 from dotenv import load_dotenv
 import random
 from datetime import datetime
@@ -100,7 +101,7 @@ async def on_message(message):
         await message.channel.send('pong')
 
     if (message.content == "hey pat show the leaderboard"):
-        await rtm.send_leaderboard('test', 0)
+        await rtm.send_leaderboard(message.channel.id)
 
 
 @client.event

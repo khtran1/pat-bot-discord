@@ -1,16 +1,14 @@
 import asyncio
-import time
+from time import perf_counter
 import random
 import nextcord
 
 import json
 import driveAuth as auth
 
-winner = 0
-end = 0
 client = None
 # Test : 432011496696971274         Main: 236513266321457152
-channelID = 236513266321457152
+channelID = 432011496696971274
 
 the_mouse = 874553330372861972
 
@@ -47,16 +45,9 @@ def update_global_leaderboard(leaderboard_str):
             break
 
 
-async def send_leaderboard(winner, time):
+async def send_leaderboard(channelID):
 
     channel = client.get_channel(channelID)
-
-    await channel.send(
-        content=(
-            f"{winner} reposted the mouse in {time} seconds"
-            "<:whitecat:712882086603784233>"
-        )
-    )
 
     embed = nextcord.Embed(title="Leaderboard", color=0xffaa00)
 
@@ -67,10 +58,10 @@ async def send_leaderboard(winner, time):
     data = get_global_leaderboard()
     leaderboard = json.loads(data)
 
-    for pos, (userid, time) in enumerate(leaderboard.items()):
+    for pos, (userid, time_score) in enumerate(leaderboard.items()):
         try:
             username = await client.fetch_user(userid)
-            leaderboard_text += f"{pos+1}. {username} - {time} sec\n"
+            leaderboard_text += f"{pos+1}. {username} - {time_score} sec\n"
         except Exception as e:
             print("Error in enumerating leaderboard: ", e)
             break
@@ -149,35 +140,40 @@ async def repost_this_mouse():
     mouse_sticker = await client.fetch_sticker(the_mouse)
 
     while not client.is_closed():
-        secondsTillMouse = random.randint(6000, 40000)
+        secondsTillMouse = random.randint(0, 5)
         print(f'Next mouse in {secondsTillMouse} seconds')
+
         await asyncio.sleep(secondsTillMouse)
 
-        #  HOW DO I SEND STICKERS
         await channel.send(stickers=[mouse_sticker])
-        print('sent mouse -- took ' + str(secondsTillMouse) + " seconds")
-
-        start = time.time()
 
         def check(m):
-            # 884600178911359016
-            if (m.stickers[0].id == the_mouse and m.channel == channel):
+            if (m.stickers):
+                if (m.stickers[0].id == the_mouse and
+                        m.channel == channel):
 
-                global winner
-                winner = m.author
+                    return True
 
-                return True
+        start = perf_counter()
 
-        await client.wait_for("message", check=check)
+        winner = await client.wait_for("message", check=check)
 
-        end = time.time()
+        end = perf_counter()
 
-        print(f'{winner} reposted in {end-start:.2f} seconds')
+        print(f'{winner.author} reposted in {end-start:.2f} seconds')
+
+        await channel.send(
+            content=(
+                f"{winner.author.mention} reposted the mouse in "
+                f"{round(end-start, 2)} seconds"
+                " <:whitecat:712882086603784233>"
+            )
+        )
 
         winner_dict = {}
 
-        winner_dict[winner.id] = round(end-start, 2)
+        winner_dict[winner.author.id] = round(end-start, 2)
 
         update_leaderboard(winner_dict)
 
-        await send_leaderboard(winner.mention, round(end-start, 2))
+        await send_leaderboard(channelID)
