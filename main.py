@@ -1,5 +1,5 @@
 import os
-import discord
+import nextcord
 from dotenv import load_dotenv
 import random
 from datetime import datetime
@@ -12,7 +12,7 @@ load_dotenv()
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-client = discord.Client()
+client = nextcord.Client()
 
 
 # For saying funny things
@@ -95,9 +95,12 @@ async def on_message(message):
         hp.updateTransitions()
         await message.channel.send('fuck')
 
-    if (message.content == "ping" and
+    if (message.content == "hey pat ping" and
             message.author.id == 228379182369996801):
         await message.channel.send('pong')
+
+    if (message.content == "hey pat show the leaderboard"):
+        await rtm.send_leaderboard('test', 0)
 
 
 @client.event
@@ -114,7 +117,7 @@ async def on_voice_state_update(member, before, after):
     if before != after:
         # Joined channel
         if before is None and after is not None:
-            embedVar = discord.Embed(
+            embedVar = nextcord.Embed(
                 description=(str(member) + ' joined **' + after.name + '**'),
                 color=0x00ff00
             )
@@ -127,7 +130,7 @@ async def on_voice_state_update(member, before, after):
             await channel.send(embed=embedVar)
         # Left channel
         if after is None and before is not None:
-            embedVar = discord.Embed(
+            embedVar = nextcord.Embed(
                 description=(str(member) + ' left **' + before.name + '**'),
                 color=0xff0000
             )
@@ -140,7 +143,7 @@ async def on_voice_state_update(member, before, after):
             await channel.send(embed=embedVar)
         # Switched channel
         if after is not None and before is not None:
-            embedVar = discord.Embed(
+            embedVar = nextcord.Embed(
                 description=(
                     str(member) + ' switched from **' + before.name +
                     '** to **' + after.name + "**"),
@@ -157,7 +160,7 @@ async def on_voice_state_update(member, before, after):
 
 @client.event
 async def on_ready():
-    game = discord.Game('fortnite')
+    game = nextcord.Game('fortnite')
     await client.change_presence(activity=game)
     print(f'{client.user} has connected to Discord!')
 

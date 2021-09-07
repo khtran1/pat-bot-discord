@@ -1,7 +1,7 @@
 import asyncio
 import time
 import random
-import discord
+import nextcord
 
 import json
 import driveAuth as auth
@@ -9,10 +9,12 @@ import driveAuth as auth
 winner = 0
 end = 0
 client = None
-# Test : 317823555725295626         Main: 236513266321457152
-channelID = 236513266321457152
+# Test : 432011496696971274         Main: 236513266321457152
+channelID = 432011496696971274
 
-the_mouse = (
+the_mouse = 874553330372861972
+
+mouse_url = (
     "https://media.discordapp.net/attachments/"
     "236513266321457152/874515974534090782/"
     "image0.png?width=576&height=676"
@@ -56,9 +58,9 @@ async def send_leaderboard(winner, time):
         )
     )
 
-    embed = discord.Embed(title="Leaderboard", color=0xffaa00)
+    embed = nextcord.Embed(title="Leaderboard", color=0xffaa00)
 
-    embed.set_thumbnail(url=the_mouse)
+    embed.set_thumbnail(url=mouse_url)
 
     leaderboard_text = ""
 
@@ -80,45 +82,6 @@ async def send_leaderboard(winner, time):
     )
 
     await channel.send(embed=embed)
-
-
-async def repost_this_mouse():
-    await client.wait_until_ready()
-
-    channel = client.get_channel(channelID)
-
-    while not client.is_closed():
-        secondsTillMouse = random.randint(6000, 40000)
-        print(f'Next mouse in {secondsTillMouse} seconds')
-        await asyncio.sleep(secondsTillMouse)
-
-        await channel.send(the_mouse)
-        print('sent mouse -- took ' + str(secondsTillMouse) + " seconds")
-
-        start = time.time()
-
-        def check(m):
-            if (m.content == the_mouse and m.channel == channel):
-
-                global end
-                end = time.time()
-
-                global winner
-                winner = m.author
-
-                return True
-
-        await client.wait_for("message", check=check)
-
-        print(f'{winner} reposted in {end-start:.2f} seconds')
-
-        winner_dict = {}
-
-        winner_dict[winner.id] = round(end-start, 2)
-
-        update_leaderboard(winner_dict)
-
-        await send_leaderboard(winner.mention, round(end-start, 2))
 
 
 def format_leaderboard(leaderboard_dict):
@@ -177,3 +140,44 @@ def update_leaderboard(winner_dict):
         new_leaderboard = json.dumps(format_leaderboard(leaderboard))
 
     update_global_leaderboard(new_leaderboard)
+
+
+async def repost_this_mouse():
+    await client.wait_until_ready()
+
+    channel = client.get_channel(channelID)
+    mouse_sticker = await client.fetch_sticker(the_mouse)
+
+    while not client.is_closed():
+        secondsTillMouse = random.randint(6000, 40000)
+        print(f'Next mouse in {secondsTillMouse} seconds')
+        await asyncio.sleep(secondsTillMouse)
+
+        #  HOW DO I SEND STICKERS
+        await channel.send(stickers=[mouse_sticker])
+        print('sent mouse -- took ' + str(secondsTillMouse) + " seconds")
+
+        start = time.time()
+
+        def check(m):
+            # 884600178911359016
+            if (m.stickers[0].id == the_mouse and m.channel == channel):
+
+                global winner
+                winner = m.author
+
+                return True
+
+        await client.wait_for("message", check=check)
+
+        end = time.time()
+
+        print(f'{winner} reposted in {end-start:.2f} seconds')
+
+        winner_dict = {}
+
+        winner_dict[winner.id] = round(end-start, 2)
+
+        update_leaderboard(winner_dict)
+
+        await send_leaderboard(winner.mention, round(end-start, 2))
